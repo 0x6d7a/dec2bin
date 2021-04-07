@@ -1,19 +1,21 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+void dec2bin_frac(double number);
+
 void dec2bin(double number) {
 
     char *ret = malloc(16 * sizeof(char));
-    char neg = 0; 
+    char neg = 0;
 
     if(number < 0) {
         number *= -1;
         neg = 1;
     }
-    
+
     int integer = (int)number;
     double frac = number - integer;
-    
+
     for (int i = 0; i < 16; i++)
     {
         ret[i] = (integer & (1 << (16 - i - 1))) != 0 ? 1: 0;
@@ -26,18 +28,56 @@ void dec2bin(double number) {
 
     if(frac != 0) {
         printf(" ");
-        dec2bin((int)(frac * (1<<16)));
+        dec2bin_frac((int)(frac * (1<<16)));
     }
 
     free(ret);
 }
 
+
+void dec2bin_frac(double number) {
+
+    char *ret = malloc(16 * sizeof(char));
+    char neg = 0;
+
+    if(number < 0) {
+        number *= -1;
+        neg = 1;
+    }
+
+    int integer = (int)number;
+    double frac = number - integer;
+
+    for (int i = 0; i < 16; i++)
+    {
+        ret[i] = (integer & (1 << (16 - i - 1))) != 0 ? 1: 0;
+        printf("%d", ret[i]);
+        if (i > 1 && !((i+1)%4) && i != 15)
+        {
+            printf(" ");
+        }
+    }
+
+    printf("\nFraction part Bit position: ");
+
+    for (int i = 0; i < 16; i++)
+    {
+        if(ret[i] == 1 & i != 15)
+          printf("%d,", i+1);
+        else if(ret[i] == 1)
+          printf("%d", i+1);
+    }
+
+    free(ret);
+}
+
+
 long double decTobin(long double fraDecimal, int precision){
-   
+
     long double fraBinary,bFractional = 0.0,dFractional,fraFactor=0.1;
     long int dIntegral,bIntegral=0;
     long int intFactor=1,remainder,temp,i;
-   
+
     dIntegral = fraDecimal;
     dFractional = fraDecimal - dIntegral;
 
@@ -49,19 +89,19 @@ long double decTobin(long double fraDecimal, int precision){
     }
 
    for(i=1; i<= precision;i++){
-      
+
        dFractional = dFractional * 2;
        temp =  dFractional;
-        
+
        bFractional = bFractional + fraFactor* temp;
        if(temp ==1)
              dFractional = dFractional - temp;
 
        fraFactor=fraFactor/10;
    }
-  
+
    fraBinary =  bIntegral +  bFractional;
-   
+
    return fraBinary;
 }
 
